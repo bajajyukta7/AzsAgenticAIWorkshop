@@ -17,8 +17,3 @@ $ pip3 install -r requirements.txt
 
 $ streamlit run app.py
 ```
-
-## Web app url
-```bash
-https://workloadshubagent-gycjeve7a2a7grb3.canadacentral-01.azurewebsites.net/
-```
