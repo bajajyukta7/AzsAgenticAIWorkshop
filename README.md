@@ -1,6 +1,6 @@
-# Workloads hub Agent
+# AzS Workshop Agent
 
-Mutli Agents and tools using Python, Streamlit and AutoGen.
+Single Agent and tools using Python, Streamlit and AutoGen.
 
 To run it locally:
 
