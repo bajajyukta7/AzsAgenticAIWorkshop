@@ -1,8 +1,9 @@
-import subprocess
 from autogen_core.tools import FunctionTool
 import logging
 import shutil
-
+import os
+from azure.search.documents import SearchClient
+from azure.core.credentials import AzureKeyCredential
 
 class ToolWrapper:
     """Manages multiple tools and provides dynamic tool selection."""
@@ -76,3 +77,38 @@ class ToolWrapper:
             description="Execute azure cli commands to create virtual machine",
         )
         return execution_tool
+    
+
+    @staticmethod
+    def rag_retriever_tool(user_input:str) -> str :
+        
+        index_name = "visindex"
+        
+        print("Retrieving from azure search for user input:\n", user_input)
+        
+        search_endpoint = os.getenv("SEARCH_ENDPOINT", "https://ybazscognitivesearchservice.search.windows.net")  
+        search_key = os.getenv("AZ_OPENAI_API_SEARCH_KEY")   
+        print(search_key,"\n")
+        search_client = SearchClient(
+            endpoint=search_endpoint,
+            index_name=index_name,
+            credential=AzureKeyCredential(search_key)
+        )
+
+        docs = ""
+        docs = list(search_client.search(user_input))
+        doc_content = "retriever data:"
+        # Append retrieved documents as context
+        if docs:
+            doc_content = "\n".join([doc["content"] for doc in docs])
+
+        print("Retrieved doc content:\n\n\n ", doc_content)
+        return doc_content
+
+    @staticmethod
+    def get_retrieval_tool():
+        retrieval_tool = FunctionTool(
+            ToolWrapper.rag_retriever_tool,
+            description="Fetch the relevant documents for a user query from RAG database.",
+        )
+        return retrieval_tool

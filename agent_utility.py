@@ -15,9 +15,8 @@ class AgentWrapper:
         # Azure OpenAI Deployment Configurations
         deployment_name = os.getenv("DEPLOYMENT_NAME", "gpt-4o")  
         azure_openai_api_version = "2024-05-01-preview"
-        azure_openai_api_key = os.getenv("Observability_AZ_OPENAI_API_KEY")  
+        azure_openai_api_key = os.getenv("Observability_AZURE_OPENAI_API_KEY")  
         azure_openai_endpoint = os.getenv("ENDPOINT_URL", "https://yukta-workloaddefintion-openai.openai.azure.com/")  
-        service_name = os.getenv("AZURE_AI_SEARCH_SERVICE_NAME", "acsscognitivesearchhack") 
         
         az_model_client = AzureOpenAIChatCompletionClient(
             azure_deployment=deployment_name,

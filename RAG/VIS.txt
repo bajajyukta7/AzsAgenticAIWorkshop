@@ -1,0 +1,12 @@
+Azure CLI Command to create virtual instance for sap solutions.
+
+
+az workloads sap-virtual-instance create \
+  -g yukta-rg \
+  -n YB1 \
+  --environment NonProd \
+  --sap-product s4hana \
+  --central-server-vm /subscriptions/8d52cb5d-c5bb-4273-b81d-bb0da5ff6e8e/resourceGroups/yukta-rg/providers/Microsoft.Compute/virtualMachines/MyDefaultVM \
+  --identity "{type:UserAssigned,userAssignedIdentities:{'/subscriptions/8d52cb5d-c5bb-4273-b81d-bb0da5ff6e8e/resourceGroups/yukta-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yuktaidentity':{}}}" \
+  --managed-rg-name "mrg-YB1" \
+  --managed-resources-network-access-type private

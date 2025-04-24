@@ -1,8 +1,4 @@
 from tool_wrapper import ToolWrapper
-import os  
-import dotenv
-import json
-import re
 # import user_proxy_agent
 
 from autogen_agentchat.agents import AssistantAgent, UserProxyAgent
@@ -14,16 +10,9 @@ retriever = None
 agent = None
 system_message = None
 
-from typing import AsyncGenerator, Sequence
-import json
-import re
 from autogen_core import CancellationToken
 from autogen_agentchat.messages import BaseMessage
 from autogen_agentchat.messages import (
-    AgentEvent,
-    BaseChatMessage,
-    ChatMessage,
-    ModelClientStreamingChunkEvent,
     TextMessage
 )
 
@@ -38,16 +27,27 @@ class VirtualMachineAgent():
     @staticmethod
     def get_agent(model_client, tools=[]):
         system_prompt = """
-        You are an assistant designed to help create Azure virtual machines.
-        Your task is to generate a azure cli command that can be used to create an Azure virtual machine based on user inputs such as VM name, resource group, location, image, size, and credentials.
-        Once azure cli is generated, wait for user to confirm if they want to create virtual machine.
+        You are an assistant designed to help create Azure virtual machines or virtual instance for sap solutions.
+        Your task is to generate a azure cli command that can be used to create an Azure resource based on user inputs required in azure cli command.
+        Once azure cli is generated, wait for user to confirm if they want to create azure resources.
         Once the create azure vm is called, wrap azure cli command inside a call to the function create_azure_vm, which takes the full azure cli command as a string argument.
+        Don't repeat the response and don't confuse virtual machine and virtual instance for sap solutions.
+        Think before responding.
         """
-        
+        system_prompt_with_rag = """
+        You are an assistant designed to help create Azure virtual machines or virtual instance for sap solutions.
+        Your task is to generate a azure cli command that can be used to create an Azure resource based on user inputs required in azure cli command.
+        Once azure cli is generated, wait for user to confirm if they want to create azure resources.
+        Once the create azure vm is called, wrap azure cli command inside a call to the function create_azure_vm, which takes the full azure cli command as a string argument.
+        To create virtual instance for sap solutions, use rag_retriever_tool to get azure cli command.
+        Don't repeat the response and don't confuse virtual machine and virtual instance for sap solutions.
+        Think before responding.
+        """
+
         # print("tools: ", tools)
         # Initialize Assistant Agent
         virtual_machine_agent = AssistantAgent(
-            name="VirtualMachineAgent",
+            name="AzureResourceAgent",
             tools=tools,
             model_client=model_client,
             system_message=system_prompt,
@@ -75,7 +75,10 @@ class VirtualMachineAgent():
         print("Starting chat with input:", messages)
         messages_string = "\n".join(messages)
 
-        agent = VirtualMachineAgent.get_agent(AgentWrapper.get_model_client(), [ToolWrapper.get_create_azure_vm()])  # ✅ Get the GroupChatManager
+        agent = VirtualMachineAgent.get_agent(AgentWrapper.get_model_client(), [
+            ToolWrapper.get_create_azure_vm(),
+            #  ToolWrapper.get_retrieval_tool()
+             ])  # ✅ Get the GroupChatManager
 
         # Process the response
         tools = []

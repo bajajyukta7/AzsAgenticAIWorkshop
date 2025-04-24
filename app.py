@@ -37,8 +37,8 @@ if "last_cli_command" not in st.session_state:
 
 # Sidebar for API tokens and model selection
 with st.sidebar:
-    az_openai_api_key = os.getenv("AZ_OPENAI_API_KEY")
-    st.session_state.az_openai_api_key = az_openai_api_key
+    AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+    st.session_state.AZURE_OPENAI_API_KEY = AZURE_OPENAI_API_KEY
     st.divider()
     models = ["azure-openai/gpt-4o"]
     st.selectbox("🤖 Select a Model", options=models, key="model")
@@ -61,7 +61,7 @@ with chat_container:
             st.markdown(message["content"])
 
 def extract_cli_command(response):
-    if "```bash" in response or "```" in response:  # Look for any CLI command wrapped in a code block
+    if "```bash" in response or "```" in response or "az cli" in response:  # Look for any CLI command wrapped in a code block
         # Extracting everything between ```bash or ``` (CLI code block)
         return response.split("```")[1].strip()
     return None
@@ -96,7 +96,7 @@ if st.session_state.last_cli_command:
     st.markdown("### Detected CLI Command:")
     st.code(st.session_state.last_cli_command, language="cli")
    
-    if st.button("⚡ Create Virtual Machine"):
+    if st.button("⚡ Create Azure Resource"):
         st.session_state.messages.append({"role": "user", "content": "Create virtual machine"})
         with st.chat_message("assistant"):
             try:
