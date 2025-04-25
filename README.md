@@ -7,7 +7,7 @@ To run it locally:
 ```bash
 $ git clone https://github.com/bajajyukta7/AzsAgenticAIWorkshop.git
 
-$ cd <this-repo-folder>
+$ cd AzsAgenticAIWorkshop
 
 $ install python version 3.11.9 - https://www.python.org/downloads/release/python-3119/
 
