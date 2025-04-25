@@ -75,10 +75,8 @@ class VirtualMachineAgent():
         print("Starting chat with input:", messages)
         messages_string = "\n".join(messages)
 
-        agent = VirtualMachineAgent.get_agent(AgentWrapper.get_model_client(), [
-            ToolWrapper.get_create_azure_vm(),
-            #  ToolWrapper.get_retrieval_tool()
-             ])  # ✅ Get the GroupChatManager
+        agent = VirtualMachineAgent.get_agent(AgentWrapper.get_model_client(),
+                                              ToolWrapper.get_all_tools())  # ✅ Get the GroupChatManager
 
         # Process the response
         tools = []
